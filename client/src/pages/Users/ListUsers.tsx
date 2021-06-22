@@ -1,29 +1,29 @@
 import React, { Component} from 'react';
-import { Link, RouteComponentProps } from 'react-router-dom';
+// import { Link, RouteComponentProps } from 'react-router-dom';
 import { AgGridColumn, AgGridReact } from "ag-grid-react";
-import axios from 'axios';
+// import axios from 'axios';
 
-import Wrapper from '../components/Wrapper';
+//redux
+import { connect } from "react-redux";
+import { AnyAction, bindActionCreators, Dispatch } from "redux";
+import { ApplicationState } from "../../store";
+// import { ThunkDispatch } from "redux-thunk";
+// import { User } from "../../store/users/actionTypes";
+import { fetchUsersRequest } from "../../store/users/actionCreators";
 
+
+import Wrapper from '../../components/Wrapper';
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
 
-interface User { 
-  id: number,
-  first_name: string,
-  last_name: string,
-  email: string,
-  phone: number,
-  address: string,
-  description: string,
-}
+// interface ListUsersState { 
+//   rowData: User[]
+// }
 
-interface ListUsersState { 
-  rowData: User[]
-}
+type UsersListProps = ReturnType<typeof mapStateToProps> & ReturnType<typeof mapDispatchToProps>;
 
-class ListUsers extends Component<RouteComponentProps, ListUsersState> {
-  constructor(props: RouteComponentProps){
+class ListUsers extends Component<UsersListProps, {}> {
+  constructor(props: UsersListProps){
     super(props);
 
     this.state = { 
@@ -32,25 +32,21 @@ class ListUsers extends Component<RouteComponentProps, ListUsersState> {
   }
 
   public componentDidMount(): void {
-    axios.get(`http://localhost:5000/users`).then(data => {
-      console.log("user api data..");
-      console.log(data);
-      this.setState({rowData: data.data});
-    });
+    this.props.fetchUsersRequest();
   }
 
   public render(){
-    console.log("rowData..");
-    console.log(this.state.rowData);
-    const { rowData } = this.state;
+    const { data, loading, errors } = this.props;
+    console.log("UsersListProps data..");
+    console.log(data);
 
     return (
       <Wrapper>
         <div className="row">
-          <div className="col-12 mx-auto">
+          <div className="col-12 mx-auto">            
             <div className="ag-theme-alpine" style={{height: 400, width: 800}}>
                 <AgGridReact
-                    rowData={rowData}>
+                    rowData={data}>
                     <AgGridColumn headerName="ID" field="id" sortable={ true } filter={ true }></AgGridColumn>
                     <AgGridColumn headerName="First Name" field="first_name" sortable={ true } filter={ true }></AgGridColumn>
                     <AgGridColumn headerName="Last Name" field="last_name" sortable={ true } filter={ true }></AgGridColumn>
@@ -68,4 +64,19 @@ class ListUsers extends Component<RouteComponentProps, ListUsersState> {
   
 }
 
-export default ListUsers;
+
+const mapStateToProps = ({ users }: ApplicationState) => ({
+  loading: users.loading,
+  errors: users.errors,
+  data: users.data
+});
+
+const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
+  bindActionCreators(
+    {
+      fetchUsersRequest
+    },
+    dispatch
+  );
+
+export default connect(mapStateToProps, mapDispatchToProps)(ListUsers);
