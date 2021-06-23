@@ -5,7 +5,8 @@ import { UsersActions } from './actions';
 export const initialState: UsersState = {
   data: [],
   errors: null,
-  loading: false
+  loading: false,
+  message: null
 }
 
 export const usersReducer = (state: UsersState = initialState, action: UsersActions): UsersState => {
@@ -19,8 +20,20 @@ export const usersReducer = (state: UsersState = initialState, action: UsersActi
     case UsersActionTypes.FETCH_USERS_ERROR: {
       return { ...state, loading: false, errors: action.payload }
     }
+    case UsersActionTypes.ADD_USER_REQUEST: {
+      return { ...state, loading: true }
+    }
+    case UsersActionTypes.ADD_USER_SUCCESS: {
+      return { ...state, loading: false, message: action.payload }
+    }
+    case UsersActionTypes.ADD_USER_ERROR: {
+      return { ...state, loading: false, errors: action.payload }
+    }
+    case UsersActionTypes.RESET_USER_REQUEST: {
+      return { ...state, data: [], errors: null, loading: false, message: null }
+    }
     default: {
-      return state
+      return state;
     }
   }
 }

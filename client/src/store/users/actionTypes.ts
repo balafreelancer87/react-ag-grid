@@ -9,7 +9,11 @@
 export enum UsersActionTypes {
   FETCH_USERS_REQUEST = '@@users/FETCH_REQUEST',
   FETCH_USERS_SUCCESS = '@@users/FETCH_SUCCESS',
-  FETCH_USERS_ERROR = '@@users/FETCH_ERROR'
+  FETCH_USERS_ERROR = '@@users/FETCH_ERROR',
+  ADD_USER_REQUEST = '@@add_user/FETCH_REQUEST',
+  ADD_USER_SUCCESS = '@@add_user/FETCH_SUCCESS',
+  ADD_USER_ERROR = '@@add_user/FETCH_ERROR',
+  RESET_USER_REQUEST = '@@reset_user/RESET_USER_REQUEST'
 }
 
 // This type is basically shorthand for `{ [key: string]: any }`. Feel free to replace `any` with
@@ -18,11 +22,11 @@ export type ApiResponse = Record<string, any>
 
 // Response object for GET /users
 export interface User extends ApiResponse {
-  id: number,
+  id?: number,
   first_name: string,
   last_name: string,
   email: string,
-  phone: number,
+  phone: number | string,
   address: string,
   description: string,
 }
@@ -33,4 +37,5 @@ export interface UsersState {
   readonly loading: boolean
   readonly data: User[] | string[]
   readonly errors?: string | null
+  readonly message?: string | null
 }

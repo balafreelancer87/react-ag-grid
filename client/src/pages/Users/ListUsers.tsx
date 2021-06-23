@@ -7,7 +7,7 @@ import { AgGridColumn, AgGridReact } from "ag-grid-react";
 import { connect } from "react-redux";
 import { AnyAction, bindActionCreators, Dispatch } from "redux";
 import { ApplicationState } from "../../store";
-// import { ThunkDispatch } from "redux-thunk";
+import { ThunkDispatch } from "redux-thunk";
 // import { User } from "../../store/users/actionTypes";
 import { fetchUsersRequest } from "../../store/users/actionCreators";
 
@@ -32,7 +32,7 @@ class ListUsers extends Component<UsersListProps, {}> {
   }
 
   public componentDidMount(): void {
-    this.props.fetchUsersRequest();
+    this.props.fetchUsers();
   }
 
   public render(){
@@ -71,12 +71,20 @@ const mapStateToProps = ({ users }: ApplicationState) => ({
   data: users.data
 });
 
-const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
-  bindActionCreators(
-    {
-      fetchUsersRequest
-    },
-    dispatch
-  );
+// const mapDispatchToProps = (dispatch: Dispatch<AnyAction>) =>
+//   bindActionCreators(
+//     {
+//       fetchUsersRequest
+//     },
+//     dispatch
+//   );
+
+const mapDispatchToProps = (
+  dispatch: ThunkDispatch<any, any, AnyAction>
+) => {
+  return {
+    fetchUsers: () => dispatch(fetchUsersRequest())
+  };
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ListUsers);

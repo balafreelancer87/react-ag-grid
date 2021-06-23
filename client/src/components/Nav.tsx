@@ -22,6 +22,11 @@ class Nav extends Component<{}, MenuState> {
                 Users List
             </NavLink>
           </li>
+          <li className="nav-item">
+            <NavLink to={'/add-user'} className="nav-link">
+                Add User
+            </NavLink>
+          </li>
         </ul>
       
       </nav> 

@@ -14,7 +14,29 @@ interface FetchUsersErrorAction {
   payload: string;
 }
 
+interface AddUserAction {
+  type: UsersActionTypes.ADD_USER_REQUEST;
+}
+
+interface AddUsersSuccessAction {
+  type: UsersActionTypes.ADD_USER_SUCCESS;
+  payload: string;
+}
+
+interface AddUsersErrorAction {
+  type: UsersActionTypes.ADD_USER_ERROR;
+  payload: string; 
+}
+
+interface ResetUserAction {
+  type: UsersActionTypes.RESET_USER_REQUEST;
+}
+
 export type UsersActions =
   | FetchUsersAction
   | FetchUsersSuccessAction
-  | FetchUsersErrorAction;
+  | FetchUsersErrorAction
+  | AddUserAction
+  | AddUsersSuccessAction
+  | AddUsersErrorAction
+  | ResetUserAction;

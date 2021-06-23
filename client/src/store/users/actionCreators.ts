@@ -1,5 +1,7 @@
 import { ActionCreator, Dispatch } from "redux";
 import { ThunkAction } from "redux-thunk";
+import { toast } from 'react-toastify';
+import { history } from '../../helpers';
 
 import { UsersActionTypes } from "./actionTypes";
 import { UsersActions } from "./actions";
@@ -33,5 +35,43 @@ export const fetchUsersRequest: ActionCreator<AppThunk> = () => {
         payload: "Error in Fetch Users List"
       });
     }
+  };
+};
+
+export const addUserRequest: ActionCreator<AppThunk> = (formData) => {
+  return async (dispatch: Dispatch) => {
+    dispatch({
+      type: UsersActionTypes.ADD_USER_REQUEST,
+    });
+    try {
+      const result = await axios
+        .post(`http://localhost:5000/users`, formData)
+        .then(res => res.data);
+        toast.success("User added Successfully!!!", {
+          position: toast.POSITION.TOP_CENTER
+        });
+        //history.push('/list-users');
+      return dispatch({
+        type: UsersActionTypes.ADD_USER_SUCCESS,
+        payload: "success"
+      });
+    } catch (err) {
+      toast.error("User adding failed!!!", {
+        position: toast.POSITION.TOP_LEFT
+      });
+      return dispatch({
+        type: UsersActionTypes.ADD_USER_ERROR,
+        payload: "fail"
+      });
+    }
+  };
+};
+
+export const resetUsersRequest: ActionCreator<AppThunk> = () => {
+  return async (dispatch: Dispatch) => {
+    dispatch({
+      type: UsersActionTypes.RESET_USER_REQUEST,
+    });
+   
   };
 };
