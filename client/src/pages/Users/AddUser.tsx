@@ -59,8 +59,11 @@ class AddUser extends Component<Props, AddUserState> {
   }
 
   public componentDidMount(): void {
+    this.clearMessage();   
+  }
+
+  public clearMessage(): void {
     this.props.resetUser();
-   
   }
 
   private processFormSubmission = (e: React.FormEvent<HTMLFormElement>): void => {
@@ -91,15 +94,19 @@ class AddUser extends Component<Props, AddUserState> {
       })
   }
 
+  public componentWillUnmount() {  
+    this.clearMessage();
+  }
+
   public render(){
     const { submitSuccess, loading } = this.state;
     console.log("props...");
     console.log(this.props);
 
-    // const { message } = this.props;
-    // if (message === "success") {
-    //   this.props.history.push('/list-users');
-    // }
+    const { message } = this.props;
+    if (message === "success") {        
+      this.props.history.push('/list-users');
+    }
     
     return (
       <Wrapper>

@@ -17,6 +17,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Home from './pages/Home';
 import ListUsers from './pages/Users/ListUsers';
 import AddUser from './pages/Users/AddUser';
+import InfiniteScrollGrid from './pages/InfiniteScrollGrid/InfiniteScrollGrid';
 
 interface AppProps {
   store: Store<ApplicationState>;
@@ -35,6 +36,7 @@ class App extends Component<AppProps, {}> {
             <Route path={'/'} exact component={Home}/>
             <Route path={'/list-users'} exact component={ListUsers}/>
             <Route path={'/add-user'} exact component={AddUser}/>
+            <Route path={'/infinite-scroll'} exact component={InfiniteScrollGrid}/>
           </BrowserRouter>
         </ConnectedRouter>
       </Provider>      

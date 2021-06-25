@@ -1,7 +1,6 @@
 import { ActionCreator, Dispatch } from "redux";
 import { ThunkAction } from "redux-thunk";
 import { toast } from 'react-toastify';
-import { history } from '../../helpers';
 
 import { UsersActionTypes } from "./actionTypes";
 import { UsersActions } from "./actions";
@@ -50,7 +49,7 @@ export const addUserRequest: ActionCreator<AppThunk> = (formData) => {
         toast.success("User added Successfully!!!", {
           position: toast.POSITION.TOP_CENTER
         });
-        //history.push('/list-users');
+        
       return dispatch({
         type: UsersActionTypes.ADD_USER_SUCCESS,
         payload: "success"
@@ -71,7 +70,6 @@ export const resetUsersRequest: ActionCreator<AppThunk> = () => {
   return async (dispatch: Dispatch) => {
     dispatch({
       type: UsersActionTypes.RESET_USER_REQUEST,
-    });
-   
+    }); 
   };
 };

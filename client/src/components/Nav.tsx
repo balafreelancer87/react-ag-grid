@@ -14,17 +14,22 @@ class Nav extends Component<{}, MenuState> {
         <ul className="navbar-nav">
           <li className="nav-item">
             <NavLink to={'/'} exact className="nav-link">
-                Home
+              Home
             </NavLink>
           </li>
           <li className="nav-item">
             <NavLink to={'/list-users'} className="nav-link">
-                Users List
+              List Users
             </NavLink>
           </li>
           <li className="nav-item">
             <NavLink to={'/add-user'} className="nav-link">
-                Add User
+              Add User
+            </NavLink>
+          </li>
+          <li className="nav-item">
+            <NavLink to={'/infinite-scroll'} className="nav-link">
+              Infinite Scroll
             </NavLink>
           </li>
         </ul>

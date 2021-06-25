@@ -1,11 +1,9 @@
 import React, { Component} from 'react';
-// import { Link, RouteComponentProps } from 'react-router-dom';
 import { AgGridColumn, AgGridReact } from "ag-grid-react";
-// import axios from 'axios';
 
 //redux
 import { connect } from "react-redux";
-import { AnyAction, bindActionCreators, Dispatch } from "redux";
+import { AnyAction } from "redux";
 import { ApplicationState } from "../../store";
 import { ThunkDispatch } from "redux-thunk";
 // import { User } from "../../store/users/actionTypes";
