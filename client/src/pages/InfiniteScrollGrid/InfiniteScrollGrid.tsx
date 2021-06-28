@@ -26,9 +26,11 @@ export interface GridState {
   rowBuffer?: number;
   paginationPageSize?: number;
   cacheOverflowSize?: number;
+  cacheBlockSize?: number;
   maxConcurrentDatasourceRequests?: number;
   maxBlocksInCache?: number;
   infiniteInitialRowCount?: number;
+  components?: any;
 }
 
 
@@ -39,7 +41,7 @@ export type Props = PropsFromRedux & OwnProps;
 
 class InfiniteScrollGrid extends Component<Props, GridState> {
   gridApi!: GridApi;
-  // params!: any;
+  params: any;
 
   constructor(props: Props){
     super(props);
@@ -53,13 +55,22 @@ class InfiniteScrollGrid extends Component<Props, GridState> {
         sortable: true,   
         resizable: true
       },
+      components: {
+        loadingRenderer: function(params: any) {
+          if (params.value !== undefined) {
+            return params.value;
+          } else {
+            return '<img src="https://www.ag-grid.com/example-assets/loading.gif">';
+          }
+        }
+      },
       columnDefs: [
-        // {
-        //   headerName: "ID",
-        //   width: 50,
-        //   valueGetter: "node.id",
-        //   cellRenderer: "loadingRenderer"
-        // },
+        {
+          headerName: "ID",
+          width: 100,
+          valueGetter: "node.id",
+          cellRenderer: "loadingRenderer"
+        },
         {
           headerName: "Athlete",
           field: "athlete",
@@ -113,22 +124,25 @@ class InfiniteScrollGrid extends Component<Props, GridState> {
       ],
       rowSelection: "multiple",
       rowModelType: "infinite",
-      rowBuffer: 10,
+      rowBuffer: 0,
       paginationPageSize: 50,
       cacheOverflowSize: 2,
+      cacheBlockSize: 50,
       maxConcurrentDatasourceRequests: 1,
       maxBlocksInCache: 10,
       infiniteInitialRowCount: 50
     };
   }
 
-  // public componentDidMount(): void { 
-  // }
+  public componentDidMount(): void { 
+    console.log("componentDidMount params..");
+    console.log(this.params);
+  }
 
   onGridReady = (params: any): void => {
     console.log("params..");
     console.log(params);
-    // this.params = params;
+    this.params = params;
     this.gridApi = params.api;
     const updateData = (data: any): void => {
       // console.log("data.length..");
@@ -162,17 +176,23 @@ class InfiniteScrollGrid extends Component<Props, GridState> {
     //   });
     this.props.fetchInfiniteScroll();
     updateData(this.props.data);
+    this.setState({ rowData: this.props.data });
   };
 
-  // public componentDidUpdate = (): void => {
-  //   console.log("componentDidUpdate...");
-  //   this.onGridReady(this.params);
-  // }
+  public componentDidUpdate = (): void => {
+    console.log("componentDidUpdate...");
+    console.log("componentDidUpdate params..");
+    console.log(this.params);
+    //this.onGridReady(this.params);
+  }
 
   public render(){
 
     console.log("this.props..");
     console.log(this.props);
+
+    console.log("this.states..");
+    console.log(this.state);
 
     return (
       <Wrapper>
@@ -183,7 +203,7 @@ class InfiniteScrollGrid extends Component<Props, GridState> {
               onGridReady={this.onGridReady}
               columnDefs={this.state.columnDefs}
               defaultColDef={this.state.defaultColDef}
-              // components={this.state.components}
+              components={this.state.components}
               rowSelection={this.state.rowSelection}
               rowDeselection={true}
               rowBuffer={this.state.rowBuffer}
