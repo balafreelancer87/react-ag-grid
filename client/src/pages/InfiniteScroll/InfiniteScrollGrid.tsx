@@ -265,7 +265,7 @@ class InfiniteScrollGrid extends Component<Props, GridState> {
         flex: 1,
         minWidth: 150,
         editable: true,
-        // filter: true,
+        //filter: true,
         sortable: true,   
         resizable: true,
         floatingFilter: true
@@ -295,8 +295,7 @@ class InfiniteScrollGrid extends Component<Props, GridState> {
           filterParams: {
             filterOptions: ['contains','startsWith','endsWith'],
             suppressAndOrCondition: true,
-          },
-          suppressMenu: true
+          }
         },
         {
           headerName: "Age",
