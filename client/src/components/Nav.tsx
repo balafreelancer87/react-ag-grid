@@ -32,6 +32,11 @@ class Nav extends Component<{}, MenuState> {
               Infinite Scroll
             </NavLink>
           </li>
+          {/* <li className="nav-item">
+            <NavLink to={'/infinite-scroll-server'} className="nav-link">
+              Infinite Scroll Server
+            </NavLink>
+          </li> */}
         </ul>
       
       </nav> 
