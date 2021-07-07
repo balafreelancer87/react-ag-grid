@@ -83,7 +83,7 @@ function filterData(filterModel: any, data: any) {
     // console.log('item...');
     // console.log(item);
     if (filterModel.BusinessUnitID) {
-      let BusinessUnitID = item.BusinessUnitID;
+      let BusinessUnitID = parseInt(item.BusinessUnitID);
       let allowedBusinessUnitID = parseInt(filterModel.BusinessUnitID.filter);
       if (filterModel.BusinessUnitID.type === 'equals') {
         if (BusinessUnitID !== allowedBusinessUnitID) {
@@ -645,7 +645,7 @@ class InfiniteScrollMassGrid extends Component<Props, GridState> {
       cacheOverflowSize: 2,
       maxConcurrentDatasourceRequests: 1,
       maxBlocksInCache: 10,
-      cacheBlockSize: 50,
+      cacheBlockSize: 100000,
       paginationPageSize: 50,
       infiniteInitialRowCount: 50,
       getRowNodeId: function (item: any): any {
@@ -655,8 +655,8 @@ class InfiniteScrollMassGrid extends Component<Props, GridState> {
   }
 
   public componentDidMount(): void { 
-    console.log("componentDidMount params..");
-    console.log(this.params);
+    // console.log("componentDidMount params..");
+    // console.log(this.params);
     this.setData();
   }
 
@@ -666,18 +666,21 @@ class InfiniteScrollMassGrid extends Component<Props, GridState> {
   };
 
   onGridReady = async(params: any): Promise<any> => {
-    console.log("params..");
-    console.log(params);
+    // console.log("params..");
+    // console.log(params);
     this.params = params;
     this.gridApi = params.api;
     await this.setData();
+    
+    console.log("this.state.rowData..");
+    console.log(this.state.rowData);
     this.updateData(this.state.rowData);
 
   }
 
   updateData = (data: any): void => {
-    // console.log("data.length..");
-    // console.log(data.length);
+    console.log("updateData data.length..");
+    console.log(data.length);
     data.forEach(function (data: any, index: any) {
       data.id = 'R' + (index + 1);
     });
@@ -717,11 +720,11 @@ class InfiniteScrollMassGrid extends Component<Props, GridState> {
 
   public render(){
 
-    console.log("this.props..");
-    console.log(this.props);
+    // console.log("this.props..");
+    // console.log(this.props);
 
-    console.log("this.states..");
-    console.log(this.state);
+    // console.log("this.states..");
+    // console.log(this.state);
 
     return (
       <Wrapper>
