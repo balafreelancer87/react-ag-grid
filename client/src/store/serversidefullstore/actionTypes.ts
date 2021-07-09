@@ -25,7 +25,7 @@ export interface ServerSideFullStoreData extends ApiResponse {
 // https://github.com/piotrwitek/react-redux-typescript-guide#state-with-type-level-immutability
 export interface ServerSideFullStoreState {
   readonly loading: boolean
-  readonly data: ServerSideFullStoreData[] | string[]
+  readonly data: ServerSideFullStoreData[] | string[] | any
   readonly errors?: string | null
   readonly message?: string | null
 }

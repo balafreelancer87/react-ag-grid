@@ -20,7 +20,7 @@ import {LicenseManager} from "ag-grid-enterprise";
 LicenseManager.setLicenseKey("Peace_OTY2OTQ1OTQ1Njk3Mw==7e213e88aef89910e528cf77b5ac1af0");
 
 export interface GridState {
-  rowData?: any[];
+  rowData?: any;
   defaultColDef?: ColDef;
   columnDefs?: ColDef[]; 
   rowModelType?: string;
@@ -61,8 +61,6 @@ class ServerSideFullStore extends Component<Props, GridState> {
         {field: 'bronze', aggFunc: 'sum'},
       ],
       defaultColDef: {
-        flex: 1,
-        minWidth: 100,
         sortable: true
       },
       rowModelType: 'serverSide',
@@ -83,7 +81,7 @@ class ServerSideFullStore extends Component<Props, GridState> {
     
   }
 
-  onGridReady = async(params: any) => {
+  onGridReady = (params: any) => {
     console.log("onGridReady params...");
     console.log(params);
     this.gridApi = params.api;
@@ -96,9 +94,16 @@ class ServerSideFullStore extends Component<Props, GridState> {
     // console.log("data...");
     // console.log(data);
 
-    const dataSource = await this.updateDataSource();
+    const dataSource = this.updateDataSource();
     params.api.setServerSideDatasource(dataSource);
   }
+
+  setData = (reqParams: any) => {
+    this.props.serverSideFullStoreRequest(reqParams);
+    console.log("this.props.data...");
+    console.log(this.props.data);
+    //this.setState({ rowData: this.props.data });
+  };
 
   updateDataSource = () => {
   
@@ -107,26 +112,30 @@ class ServerSideFullStore extends Component<Props, GridState> {
           console.log("getRows params");
           console.log(JSON.stringify(params.request, null, 1));
           
-          try{          
-            const res = await fetch('http://localhost:8000/olympicWinners',  {
-              method: 'post',
-              body: JSON.stringify(params.request),
-              headers: {"Content-Type": "application/json; charset=utf-8"}
-            });
+          // try{          
+            // const res = await fetch('http://localhost:8000/olympicWinners',  {
+            //   method: 'post',
+            //   body: JSON.stringify(params.request),
+            //   headers: {"Content-Type": "application/json; charset=utf-8"}
+            // });
+            
+            // console.log("res...");
+            // console.log(res);
+            // const data = await res.json();
+            // console.log("data...");
+            // console.log(data);
 
-            console.log("res...");
-            console.log(res);
-            const data = await res.json();
-            console.log("data...");
-            console.log(data);
+            // this.setData(params.request);
+            // params.successCallback(this.state.rowData.rows, this.state.rowData.lastRow);
+            await this.props.serverSideFullStoreRequest(params.request);
+            params.successCallback(this.props.data.rows, this.props.data.lastRow);
 
-            params.successCallback(data.rows, data.lastRow);
+          // } catch (err) {
+          //   console.error(err);
+          //   params.failCallback();
+          // }
 
-          } catch (err) {
-            console.error(err);
-            params.failCallback();
-          }
-  
+          // demo sample code
           // fetch('http://localhost:8000/olympicWinners', {
           //     method: 'post',
           //     body: JSON.stringify(params.request),
@@ -139,7 +148,8 @@ class ServerSideFullStore extends Component<Props, GridState> {
           // .catch(error => {
           //     console.error(error);
           //     params.failCallback();
-          // })
+          // });
+
         }
     };
 
@@ -195,7 +205,7 @@ const mapDispatchToProps = (
   dispatch: ThunkDispatch<any, any, AnyAction>
 ) => {
   return {
-    serverSideFullStoreRequest: () => dispatch(serverSideFullStoreRequest())
+    serverSideFullStoreRequest: (params: any) => dispatch(serverSideFullStoreRequest(params))
   };
 };
 

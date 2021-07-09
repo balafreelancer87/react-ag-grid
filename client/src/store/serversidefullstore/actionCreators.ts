@@ -15,37 +15,24 @@ export type AppThunk = ThunkAction<Promise<any>,
   ServerSideFullStoreActions
 >;
 
-export const serverSideFullStoreRequest: ActionCreator<AppThunk> = () => {
+export const serverSideFullStoreRequest: ActionCreator<AppThunk> = (params) => {
   return async (dispatch: Dispatch) => {
     dispatch({
       type: ServerSideFullStoreActionTypes.SERVER_SIDE_FULLSTORE_DATA_REQUEST,
     });
     try {
-      // const response = await axios
-      //   .get('http://localhost:9000/transactions')
-      //   .then(res => res.data.transactions);
+      console.log("serverSideFullStoreRequest params..");
+    console.log(params);
+      const response = await axios
+        .post('http://localhost:8000/olympicWinners', params)
+        .then(res => res.data);
+        console.log("response...");
+        console.log(response);
 
-      // return dispatch({
-      //   type: ServerSideFullStoreActionTypes.FETCH_INFINITE_SCROLL_MASS_DATA_SUCCESS,
-      //   payload: response
-      // });
-
-      // Fetch Function   
-      const res = await fetch('./db.json');
-        console.log("res...");
-        console.log(res);
-      const data = await res.json();
-        console.log("data.transactions...");
-        console.log(data.transactions);
-        console.log("data.transactions.length..");
-        console.log(data.transactions.length);
-
-    return dispatch({
-      type: ServerSideFullStoreActionTypes.SERVER_SIDE_FULLSTORE_DATA_SUCCESS,
-      payload: data.transactions
-    });
-
-      
+      return dispatch({
+        type: ServerSideFullStoreActionTypes.SERVER_SIDE_FULLSTORE_DATA_SUCCESS,
+        payload: response
+      });
 
     } catch (err) {
       return dispatch({
