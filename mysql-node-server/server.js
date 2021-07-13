@@ -5,6 +5,7 @@ var app = express();
 var dbConn = require('./config/db.config');
 
 import OlympicWinnersService from './olympicWinnersService';
+import TransactionsService from './transactionsService';
 
 app.use(function(req, res, next) {  
     res.header("Access-Control-Allow-Origin", "*");  
@@ -34,6 +35,12 @@ app.get('/olympicWinners' , (req, res) => {
 
 app.post('/olympicWinners', function (req, res) {
     OlympicWinnersService.getData(req.body, (rows, lastRow) => {
+        res.json({rows: rows, lastRow: lastRow});
+    });
+});
+
+app.post('/transactions', function (req, res) {
+    TransactionsService.getData(req.body, (rows, lastRow) => {
         res.json({rows: rows, lastRow: lastRow});
     });
 });

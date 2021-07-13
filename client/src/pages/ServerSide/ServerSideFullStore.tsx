@@ -1,23 +1,23 @@
 import React, { Component} from 'react';
-import { AgGridColumn, AgGridReact, AgGridReactProps } from "ag-grid-react";
-import {CellValueChangedEvent, ColDef, GetMainMenuItemsParams, GridReadyEvent, GridApi, IDatasource, ColumnApi, IGetRowsParams, GridOptions } from 'ag-grid-community';
-import axios from "axios";
+import { AgGridReact, AgGridReactProps } from '@ag-grid-community/react';
+import { AllModules, ColumnApi, GridReadyEvent, IServerSideGetRowsParams, ModelUpdatedEvent, GridApi, ColDef, ServerSideStoreType, GridOptions, ModuleRegistry} from '@ag-grid-enterprise/all-modules';
 
+import axios from "axios";
 
 //redux
 import { connect } from "react-redux";
 import { AnyAction } from "redux";
 import { ApplicationState } from "../../store";
 import { ThunkDispatch } from "redux-thunk";
-
 import { serverSideFullStoreRequest } from "../../store/serversidefullstore/actionCreators";
-
 
 import Wrapper from '../../components/Wrapper';
 import "ag-grid-community/dist/styles/ag-grid.css";
 import "ag-grid-community/dist/styles/ag-theme-alpine.css";
-import {LicenseManager} from "ag-grid-enterprise";
-LicenseManager.setLicenseKey("Peace_OTY2OTQ1OTQ1Njk3Mw==7e213e88aef89910e528cf77b5ac1af0");
+
+// import {LicenseManager} from "ag-grid-enterprise";
+// LicenseManager.setLicenseKey("Peace_OTY2OTQ1OTQ1Njk3Mw==7e213e88aef89910e528cf77b5ac1af0");
+
 
 export interface GridState {
   rowData?: any;
@@ -30,7 +30,8 @@ export interface GridState {
   debug?: boolean;
   purgeClosedRowNodes?: boolean;
   blockLoadDebounceMillis?: number;
-  serverSideStoreType?: any;
+  serverSideStoreType?: ServerSideStoreType | any;
+  getServerSideStoreParams?: any;
 }
 
 
@@ -64,13 +65,39 @@ class ServerSideFullStore extends Component<Props, GridState> {
         sortable: true
       },
       rowModelType: 'serverSide',
-      serverSideStoreType: 'Partial',
+      serverSideStoreType: ServerSideStoreType.Partial,
       debug: true,
       cacheBlockSize: 20,
       maxBlocksInCache: 3,
       purgeClosedRowNodes: true,
       maxConcurrentDatasourceRequests: 2,
       blockLoadDebounceMillis: 1000,
+      getServerSideStoreParams: function (params: any): any {
+        var noGroupingActive = params.rowGroupColumns.length === 0;
+        var res;
+        if (noGroupingActive) {
+          res = {
+            storeType: 'partial',
+            cacheBlockSize: 100,
+            maxBlocksInCache: 2,
+          };
+        } else {
+          var topLevelRows = params.level === 0;
+          res = {
+            storeType: topLevelRows ? 'full' : 'partial',
+            cacheBlockSize: params.level === 1 ? 5 : 2,
+            maxBlocksInCache: -1,
+          };
+        }
+        console.log('############## NEW STORE ##############');
+        console.log(
+          'getServerSideStoreParams, level = ' +
+            params.level +
+            ', result = ' +
+            JSON.stringify(res)
+        );
+        return res;
+      }
     };
   }
 
@@ -170,6 +197,7 @@ class ServerSideFullStore extends Component<Props, GridState> {
           <div className="col-12 mx-auto">            
             <div className="ag-theme-alpine" style={{height: 400, width: 800}}>
             <AgGridReact
+              modules={AllModules}
               onGridReady={this.onGridReady}
               columnDefs={this.state.columnDefs}
               defaultColDef={this.state.defaultColDef}
@@ -183,6 +211,7 @@ class ServerSideFullStore extends Component<Props, GridState> {
               purgeClosedRowNodes={this.state.purgeClosedRowNodes}
               blockLoadDebounceMillis={this.state.blockLoadDebounceMillis}
               debug={this.state.debug}
+              // getServerSideStoreParams={this.state.getServerSideStoreParams}
             />
 
             </div>

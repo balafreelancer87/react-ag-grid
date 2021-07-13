@@ -20,6 +20,7 @@ import AddUser from './pages/Users/AddUser';
 import InfiniteScrollGrid from './pages/InfiniteScroll/InfiniteScrollGrid';
 import InfiniteScrollMassGrid from './pages/InfiniteScroll/InfiniteScrollMassGrid';
 import ServerSideFullStore from './pages/ServerSide/ServerSideFullStore';
+import ServerSideTransactions from './pages/ServerSide/ServerSideTransactions';
 
 interface AppProps {
   store: Store<ApplicationState>;
@@ -41,6 +42,7 @@ class App extends Component<AppProps, {}> {
             <Route path={'/infinite-scroll'} exact component={InfiniteScrollGrid}/>
             <Route path={'/infinite-scroll-mass'} exact component={InfiniteScrollMassGrid}/>
             <Route path={'/server-side-full-store'} exact component={ServerSideFullStore}/>
+            <Route path={'/server-side-transactions'} exact component={ServerSideTransactions}/>
           </BrowserRouter>
         </ConnectedRouter>
       </Provider>      

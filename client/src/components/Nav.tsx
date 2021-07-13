@@ -42,6 +42,11 @@ class Nav extends Component<{}, MenuState> {
               Infinite Scroll Server Full
             </NavLink>
           </li>
+          <li className="nav-item">
+            <NavLink to={'/server-side-transactions'} className="nav-link">
+              Server Side Transactions
+            </NavLink>
+          </li>
         </ul>
       
       </nav> 
