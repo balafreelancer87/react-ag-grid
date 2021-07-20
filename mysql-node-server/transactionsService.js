@@ -192,10 +192,14 @@ class TransactionsService {
     createLimitSql(request) {
         const startRow = request.startRow;
         const endRow = request.endRow;
-        // const startRow = 0;
-        // const endRow = 20;
+       if( startRow >= 0 || endRow >= 0 ){
         const pageSize = endRow - startRow;
-        return ' limit ' + (pageSize + 1) + ' offset ' + startRow;
+        return ' limit ' + (pageSize + 1) + ' offset ' + startRow; 
+       }else{
+        return '';
+       }
+        // const pageSize = endRow - startRow;
+        // return ' limit ' + (pageSize + 1) + ' offset ' + startRow;
     }
 
     getRowCount(request, results) {

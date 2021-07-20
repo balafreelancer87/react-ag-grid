@@ -9,7 +9,7 @@ import { connect } from "react-redux";
 import { AnyAction } from "redux";
 import { ApplicationState } from "../../store";
 import { ThunkDispatch } from "redux-thunk";
-import { serverSideFullStoreRequest } from "../../store/serversidefullstore/actionCreators";
+import { serverSideFullStoreRequest, serverSideFullStoreGetRequest } from "../../store/serversidefullstore/actionCreators";
 
 import Wrapper from '../../components/Wrapper';
 import "ag-grid-community/dist/styles/ag-grid.css";
@@ -32,6 +32,8 @@ export interface GridState {
   blockLoadDebounceMillis?: number;
   serverSideStoreType?: ServerSideStoreType | any;
   getServerSideStoreParams?: any;
+  rowSelection?:  string;
+  getRowStyle?: any;
 }
 
 
@@ -52,26 +54,71 @@ class ServerSideFullStore extends Component<Props, GridState> {
 
     this.state = { 
       rowData: [],      
+      // columnDefs: [
+      //   {field: 'athlete'},
+      //   {field: 'country', rowGroup: true, hide: true},
+      //   {field: 'sport', rowGroup: true, hide: true},
+      //   {field: 'year', filter: 'number', filterParams: {newRowsAction: 'keep'}},
+      //   {field: 'gold', aggFunc: 'sum'},
+      //   {field: 'silver', aggFunc: 'sum'},
+      //   {field: 'bronze', aggFunc: 'sum'},
+      // ],
+      // columnDefs: [
+      //   {
+      //     field: 'athlete',
+      //     minWidth: 220,
+      //     filter: 'agTextColumnFilter',
+      //   },
+      //   {
+      //     field: 'country',
+      //     minWidth: 200,
+      //   },
+      //   { 
+      //     field: 'year',
+      //     filter: 'agNumberColumnFilter',
+      //   },
+      //   {
+      //     field: 'sport',
+      //     minWidth: 200,
+      //   },
+      //   { field: 'gold' },
+      //   { field: 'silver' },
+      //   { field: 'bronze' },
+      // ],
       columnDefs: [
-        {field: 'athlete'},
-        {field: 'country', rowGroup: true, hide: true},
-        {field: 'sport', rowGroup: true, hide: true},
-        {field: 'year', filter: 'number', filterParams: {newRowsAction: 'keep'}},
-        {field: 'gold', aggFunc: 'sum'},
-        {field: 'silver', aggFunc: 'sum'},
-        {field: 'bronze', aggFunc: 'sum'},
+        // {
+        //   field: 'id',
+        //   hide: true,
+        // },
+        { field: 'athlete' },
+        {
+          field: 'country',
+          rowGroup: true,
+          hide: true,
+        },
+        { field: 'gold' },
+        { field: 'silver' },
+        { field: 'bronze' },
       ],
       defaultColDef: {
+        flex: 1,
+        minWidth: 100,
         sortable: true
       },
       rowModelType: 'serverSide',
-      serverSideStoreType: ServerSideStoreType.Partial,
+      serverSideStoreType: ServerSideStoreType.Full,
       debug: true,
       cacheBlockSize: 20,
       maxBlocksInCache: 3,
       purgeClosedRowNodes: true,
       maxConcurrentDatasourceRequests: 2,
       blockLoadDebounceMillis: 1000,
+      rowSelection: 'multiple',
+      getRowStyle: (params: any): any => {
+        if (params.node.rowIndex % 2 === 0) {
+            return { background: 'red' };
+        }
+      },
       getServerSideStoreParams: function (params: any): any {
         var noGroupingActive = params.rowGroupColumns.length === 0;
         var res;
@@ -104,7 +151,8 @@ class ServerSideFullStore extends Component<Props, GridState> {
   public componentDidMount(): void { 
     console.log("componentDidMount params..");
     console.log(this.params);
-    //this.props.serverSideFullStoreRequest();
+
+    //this.setFullData();
     
   }
 
@@ -114,15 +162,31 @@ class ServerSideFullStore extends Component<Props, GridState> {
     this.gridApi = params.api;
     this.ColumnApi = params.columnApi;
 
-    // const res = await fetch('http://localhost:8000/olympicWinners');
-    // console.log("res...");
-    // console.log(res);
-    // const data = await res.json();
-    // console.log("data...");
-    // console.log(data);
-
-    const dataSource = this.updateDataSource();
+    //const dataSource = this.updateDataSource();
+    const dataSource = this.updateFullSource();
     params.api.setServerSideDatasource(dataSource);
+  }
+
+
+  setFullData = async() => {
+    await this.props.serverSideFullStoreGetRequest();
+    this.setState({ rowData: this.props.data });
+  };
+
+  updateFullSource = () => {
+
+    const dataSource = {
+      getRows : async(params: any) => {
+        console.log("getRows params");
+        console.log(JSON.stringify(params.request, null, 1));
+
+        await this.setFullData();
+        params.successCallback(this.state.rowData);
+
+      }
+    };
+
+    return dataSource;
   }
 
   setData = (reqParams: any) => {
@@ -155,6 +219,10 @@ class ServerSideFullStore extends Component<Props, GridState> {
             // this.setData(params.request);
             // params.successCallback(this.state.rowData.rows, this.state.rowData.lastRow);
             await this.props.serverSideFullStoreRequest(params.request);
+            // this.setState({ rowData: this.props.data });
+            // console.log("state rowData...");
+            // console.log(this.state.rowData);
+            // params.successCallback(this.state.rowData.rows, this.state.rowData.lastRow);
             params.successCallback(this.props.data.rows, this.props.data.lastRow);
 
           // } catch (err) {
@@ -162,25 +230,52 @@ class ServerSideFullStore extends Component<Props, GridState> {
           //   params.failCallback();
           // }
 
-          // demo sample code
-          // fetch('http://localhost:8000/olympicWinners', {
-          //     method: 'post',
-          //     body: JSON.stringify(params.request),
-          //     headers: {"Content-Type": "application/json; charset=utf-8"}
-          // })
-          // .then(httpResponse => httpResponse.json())
-          // .then(response => {
-          //     params.successCallback(response.rows, response.lastRow);
-          // })
-          // .catch(error => {
-          //     console.error(error);
-          //     params.failCallback();
-          // });
+          
 
         }
     };
 
     return dataSource;
+  };
+
+  refreshStore = () => {
+    this.gridApi.refreshServerSideStore({ purge: true });
+  };
+
+  updateSelectedRows = () => {
+    console.log("updateSelectedRows...");
+
+    var selectedRows = this.gridApi.getSelectedNodes();
+    if (!selectedRows || selectedRows.length === 0) { return; }
+
+    var selectedRow = selectedRows[0];
+    console.log("selectedRow...");
+    console.log(selectedRow);
+
+    // var idsToUpdate = this.gridApi.getSelectedNodes().map(function (node) {
+    //   return node.data.id;
+    // });
+    // console.log("idsToUpdate...");
+    // console.log(idsToUpdate);
+    // var updatedRows: any = [];
+    // this.gridApi.forEachNode(function (rowNode) {
+    //   if (idsToUpdate.indexOf(rowNode.data.id) >= 0) {
+    //     var updated = JSON.parse(JSON.stringify(rowNode.data));
+    //     console.log("updated...");
+    //     console.log(updated);
+
+    //     updated.gold += 1;
+    //     updated.silver += 2;
+    //     updated.bronze += 3;
+    //     rowNode.setData(updated);
+    //     updatedRows.push(updated);
+    //   }
+    // });
+    //updateServerRows(updatedRows);
+  };
+
+  isRowSelectable = (rowNode: any) => {
+    return !rowNode.group;
   };
 
   public render(){
@@ -196,6 +291,12 @@ class ServerSideFullStore extends Component<Props, GridState> {
         <div className="row">
           <div className="col-12 mx-auto">            
             <div className="ag-theme-alpine" style={{height: 400, width: 800}}>
+            <div style={{ marginBottom: '5px' }}>
+              <button onClick={() => this.updateSelectedRows()}>
+                Update Selected Rows
+              </button>
+              <button onClick={() => this.refreshStore()}>Refresh Store</button>
+            </div>
             <AgGridReact
               modules={AllModules}
               onGridReady={this.onGridReady}
@@ -212,6 +313,11 @@ class ServerSideFullStore extends Component<Props, GridState> {
               blockLoadDebounceMillis={this.state.blockLoadDebounceMillis}
               debug={this.state.debug}
               // getServerSideStoreParams={this.state.getServerSideStoreParams}
+              enableCellChangeFlash={true}
+              rowSelection={this.state.rowSelection}
+              isRowSelectable={this.isRowSelectable}
+              // getRowStyle={this.state.getRowStyle}
+              
             />
 
             </div>
@@ -234,7 +340,8 @@ const mapDispatchToProps = (
   dispatch: ThunkDispatch<any, any, AnyAction>
 ) => {
   return {
-    serverSideFullStoreRequest: (params: any) => dispatch(serverSideFullStoreRequest(params))
+    serverSideFullStoreRequest: (params: any) => dispatch(serverSideFullStoreRequest(params)),
+    serverSideFullStoreGetRequest: () => dispatch(serverSideFullStoreGetRequest())
   };
 };
 

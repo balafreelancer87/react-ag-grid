@@ -34,12 +34,12 @@ class Nav extends Component<{}, MenuState> {
           </li>
           <li className="nav-item">
             <NavLink to={'/infinite-scroll-mass'} className="nav-link">
-              Infinite Scroll Mass
+              Infinite Scroll Mass 500k
             </NavLink>
           </li>
           <li className="nav-item">
             <NavLink to={'/server-side-full-store'} className="nav-link">
-              Infinite Scroll Server Full
+              Server Side Full Store
             </NavLink>
           </li>
           <li className="nav-item">

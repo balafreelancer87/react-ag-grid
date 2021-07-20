@@ -32,6 +32,9 @@ export interface GridState {
   blockLoadDebounceMillis?: number;
   serverSideStoreType?: ServerSideStoreType | any;
   getServerSideStoreParams?: any;
+  rowGroupPanelShow?: any;
+  rowSelection?: string;
+  getRowNodeId?: any;
 }
 
 
@@ -57,48 +60,47 @@ class ServerSideTransactions extends Component<Props, GridState> {
           headerName: "ID",
           field: "id",
           width: 100,
-          suppressMenu: true
         },
         {
           headerName: "Account Type IDt",
           field: "AccountTypeIDt",
-          suppressMenu: true
+          valueParser: numberValueParser,
+          cellRenderer: 'agAnimateShowChangeCellRenderer',
+          valueFormatter: function (params: any) {
+            return formatNumber(params.value);
+          },
         },
         {
           headerName: "Accrued Fee",
           field: "AccruedFee",
-          suppressMenu: true
         },
         {
           headerName: "Account Type",
           field: "AccountType",
-          filter: 'agTextColumnFilter',
-          suppressMenu: true
+          rowGroup: true,
+          enableRowGroup: true,
+          hide: true,
+          // filter: 'agTextColumnFilter',
         },
         {
           headerName: "Account Type ID",
           field: "AccountTypeID",
-          suppressMenu: true
         },
         {
           headerName: "Accrued Interest",
           field: "AccruedInterest",
-          suppressMenu: true
         },
         {
           headerName: "Amort Factor",
           field: "AmortFactor",
-          suppressMenu: true
         },
         {
           headerName: "Alt Src",
           field: "AltSrc",
-          suppressMenu: true
         },
         {
           headerName: "BB Yellow Key",
           field: "BBYellowKey",
-          suppressMenu: true
         },
         {
           headerName: "Business Unit ID",
@@ -106,8 +108,7 @@ class ServerSideTransactions extends Component<Props, GridState> {
           filter: 'agNumberColumnFilter',
           filterParams: {
             buttons: ['reset'],
-            debounceMs: 1000,
-            suppressAndOrCondition: true,
+            debounceMs: 1000
           }
         },
         {
@@ -118,389 +119,313 @@ class ServerSideTransactions extends Component<Props, GridState> {
         {
           headerName: "Confirm Status Name",
           field: "ConfirmStatusName",
-          suppressMenu: true
         },
         {
           headerName: "Clearing Account NAME",
           field: "ClearingAccountNAME",
-          suppressMenu: true
         },
         {
           headerName: "Confirm Ref ID",
           field: "ConfirmRefID",
-          suppressMenu: true
         },
         {
           headerName: "Current Face",
           field: "CurrentFace",
-          suppressMenu: true
         },
         {
           headerName: "Cusip",
           field: "Cusip",
-          suppressMenu: true
         },
         {
           headerName: "CPty Ref ID",
           field: "CPtyRefID",
-          suppressMenu: true
         },
         {
           headerName: "Counter party",
           field: "Counterparty",
-          suppressMenu: true
         },
         {
           headerName: "Desk",
           field: "Desk",
-          suppressMenu: true
         },
         {
           headerName: "Desk ID",
           field: "DeskID",
-          suppressMenu: true
         },
         {
           headerName: "Dividend Rate",
           field: "DividendRate",
-          suppressMenu: true
         },
         {
           headerName: "Division",
           field: "Division",
-          suppressMenu: true
         },
         {
           headerName: "Division ID",
           field: "DivisionID",
-          suppressMenu: true
         },
         {
           headerName: "Executing Counterparty ID",
           field: "ExecutingCounterpartyID",
-          suppressMenu: true
         },
         {
           headerName: "Executing Counterparty",
           field: "ExecutingCounterparty",
-          suppressMenu: true
         },
         {
           headerName: "Firm ID",
           field: "FirmID",
-          suppressMenu: true
         },
         {
           headerName: "Firm",
           field: "Firm",
-          suppressMenu: true
         },
         {
           headerName: "External ID",
           field: "ExternalID",
-          suppressMenu: true
         },
         {
           headerName: "Executing Method",
           field: "ExecutingMethod",
-          suppressMenu: true
         },
         {
           headerName: "Execution Venue",
           field: "ExecutionVenue",
-          suppressMenu: true
         },
         {
           headerName: "Executing Type",
           field: "ExecutingType",
-          suppressMenu: true
         },
         {
           headerName: "Executing Account",
           field: "ExecutingAccount",
-          suppressMenu: true
         },
         {
           headerName: "Financial Type",
           field: "FinancialType",
-          suppressMenu: true
         },
         {
           headerName: "Fee Sum",
           field: "FeeSum",
-          suppressMenu: true
         },
         {
           headerName: "Gross Amount",
           field: "GrossAmount",
-          suppressMenu: true
         },
         {
           headerName: "ISIN",
           field: "ISIN",
-          suppressMenu: true
         },
         {
           headerName: "Instrument Type ID",
           field: "InstrumentTypeID",
-          suppressMenu: true
         },
         {
           headerName: "Investment Manager",
           field: "InvestmentManager",
-          suppressMenu: true
         },
         {
           headerName: "Modified By",
           field: "ModifiedBy",
-          suppressMenu: true
         },
         {
           headerName: "Net Settlement",
           field: "NetSettlement",
-          suppressMenu: true
         },
         {
           headerName: "Notional",
           field: "Notional",
-          suppressMenu: true
         },
         {
           headerName: "Note",
           field: "Note",
-          suppressMenu: true
         },
         {
           headerName: "Order ID",
           field: "OrderID",
-          suppressMenu: true
         },
         {
           headerName: "Original Face",
           field: "OriginalFace",
-          suppressMenu: true
         },
         {
           headerName: "offset",
           field: "offset",
-          suppressMenu: true
         },
         {
           headerName: "Price",
           field: "Price",
-          suppressMenu: true
         },
         {
           headerName: "Position Queue Status",
           field: "PositionQueueStatus",
-          suppressMenu: true
         },
         {
           headerName: "PSET Code",
           field: "PSETCode",
-          suppressMenu: true
         },
         {
           headerName: "PB",
           field: "PB",
-          suppressMenu: true
         },
         {
           headerName: "Primary Instrument ID",
           field: "PrimaryInstrumentID",
-          suppressMenu: true
         },
         {
           headerName: "Quantity",
           field: "Quantity",
-          suppressMenu: true
         },
         {
           headerName: "retryCount",
           field: "retryCount",
-          suppressMenu: true
         },
         {
           headerName: "Ref Instrument Id",
           field: "RefInstrumentId",
-          suppressMenu: true
         },
         {
           headerName: "Region",
           field: "Region",
-          suppressMenu: true
         },
         {
           headerName: "Repurchase Term",
           field: "RepurchaseTerm",
-          suppressMenu: true
         },
         {
           headerName: "RPCLDT",
           field: "RPCLDT",
-          suppressMenu: true
         },
         {
           headerName: "Repo Financing Interest",
           field: "RepoFinancingInterest",
-          suppressMenu: true
         },
         {
           headerName: "RepoInterest Rate",
           field: "RepoInterestRate",
-          suppressMenu: true
         },
         {
           headerName: "Source ID",
           field: "SourceID",
-          suppressMenu: true
         },
         {
           headerName: "Source",
           field: "Source",
-          suppressMenu: true
         },
         {
           headerName: "Sub Account",
           field: "SubAccount",
-          suppressMenu: true
         },
         {
           headerName: "Sub Account ID",
           field: "SubAccountID",
-          suppressMenu: true
         },
         {
           headerName: "Settlement Status",
           field: "SettlementStatus",
-          suppressMenu: true
         },
         {
           headerName: "SEDOL",
           field: "SEDOL",
-          suppressMenu: true
         },
         {
           headerName: "Settlement Status ID",
           field: "SettlementStatusID",
-          suppressMenu: true
         },
         {
           headerName: "Symbol",
           field: "Symbol",
-          suppressMenu: true
         },
         {
           headerName: "Security Desc",
           field: "SecurityDesc",
-          suppressMenu: true
         },
         {
           headerName: "External",
           field: "ExternalID",
-          suppressMenu: true
         },
         {
           headerName: "Spread",
           field: "Spread",
-          suppressMenu: true
         },
         {
           headerName: "Settle Date",
           field: "SettleDate",
-          suppressMenu: true
         },
         {
           headerName: "Trade Currency",
           field: "TradeCurrency",
-          suppressMenu: true
         },
         {
           headerName: "Transaction Type",
           field: "TransactionType",
-          suppressMenu: true
         },
         {
           headerName: "Txn Sub Type",
           field: "TxnSubType",
-          suppressMenu: true
         },
         {
           headerName: "Txn Sub Type ID",
           field: "TxnSubTypeID",
-          suppressMenu: true
         },
         {
           headerName: "Trade Date",
           field: "TradeDate",
-          suppressMenu: true
         },
         {
           headerName: "Trade ID",
           field: "TradeID",
-          suppressMenu: true
         },
         {
           headerName: "Text",
           field: "Text",
-          suppressMenu: true
         },
         {
           headerName: "Transaction ID",
           field: "TransactionID",
-          suppressMenu: true
         },
         {
           headerName: "Tx Version",
           field: "TxVersion",
-          suppressMenu: true
         },
         {
           headerName: "Trading Place",
           field: "TradingPlace",
-          suppressMenu: true
         },
         {
           headerName: "TRS Effective Date",
           field: "TRSEffectiveDate",
-          suppressMenu: true
         },
         {
           headerName: "TBA Settle Type",
           field: "TBASettleType",
-          suppressMenu: true
         },
         {
           headerName: "Transaction Type ID",
           field: "TransactionTypeID",
-          suppressMenu: true
         },
         {
           headerName: "Underlying Symbol",
           field: "UnderlyingSymbol",
-          suppressMenu: true
         },
         {
           headerName: "User",
           field: "User",
-          suppressMenu: true
         },
         {
           headerName: "Underlying Financing Rate",
           field: "UnderlyingFinancingRate",
-          suppressMenu: true
         },
         {
           headerName: "Valuation Currency",
           field: "ValuationCurrency",
-          suppressMenu: true
         }
       
       ],
       defaultColDef: {
         sortable: true,
         resizable: true,
-        menuTabs: ['filterMenuTab'],
+        //menuTabs: ['filterMenuTab'],
       },
       rowModelType: 'serverSide',
       serverSideStoreType: ServerSideStoreType.Partial,
@@ -534,8 +459,14 @@ class ServerSideTransactions extends Component<Props, GridState> {
             ', result = ' +
             JSON.stringify(res)
         );
+        console.log('############## NEW STORE ##############');
         return res;
-      }
+      },
+      rowGroupPanelShow: 'always',
+      rowSelection: 'multiple'
+      // getRowNodeId: function (item: any): any {
+      //   return item.newid;
+      // }
     };
   }
 
@@ -563,11 +494,8 @@ class ServerSideTransactions extends Component<Props, GridState> {
     params.api.setServerSideDatasource(dataSource);
   }
 
-  setData = (reqParams: any) => {
-    this.props.serverSideTransactionsRequest(reqParams);
-    console.log("this.props.data...");
-    console.log(this.props.data);
-    //this.setState({ rowData: this.props.data });
+  setData = (data: any) => {
+    this.setState({ rowData: data });
   };
 
   updateDataSource = () => {
@@ -593,32 +521,163 @@ class ServerSideTransactions extends Component<Props, GridState> {
             // this.setData(params.request);
             // params.successCallback(this.state.rowData.rows, this.state.rowData.lastRow);
             await this.props.serverSideTransactionsRequest(params.request);
-            params.successCallback(this.props.data.rows, this.props.data.lastRow);
+            await this.setData(this.props.data);
+            params.successCallback(this.state.rowData.rows, this.state.rowData.lastRow);
+            //params.successCallback(this.props.data.rows, this.props.data.lastRow);
 
           // } catch (err) {
           //   console.error(err);
           //   params.failCallback();
           // }
 
-          // demo sample code
-          // fetch('http://localhost:8000/olympicWinners', {
-          //     method: 'post',
-          //     body: JSON.stringify(params.request),
-          //     headers: {"Content-Type": "application/json; charset=utf-8"}
-          // })
-          // .then(httpResponse => httpResponse.json())
-          // .then(response => {
-          //     params.successCallback(response.rows, response.lastRow);
-          // })
-          // .catch(error => {
-          //     console.error(error);
-          //     params.failCallback();
-          // });
-
         }
     };
 
     return dataSource;
+  };
+
+
+  isRowSelectable = (rowNode: any) => {
+    return !rowNode.group;
+  };
+
+  refreshCache = (route: any) => {
+    //versionCounter++;
+    //var purge = document.querySelector('#purge').checked === true;
+    this.gridApi.refreshServerSideStore({
+      route: route,
+      purge: false,
+    });
+  };
+  refreshStore = () => {
+    this.gridApi.refreshServerSideStore({ purge: true });
+  };
+
+  onFlashOneCell = () => {
+    var rowNode: any = this.gridApi.getDisplayedRowAtIndex(4);
+    console.log("rowNode..");
+    console.log(rowNode);
+    this.gridApi.flashCells({
+      rowNodes: [rowNode],
+      columns: ['id'],
+    });
+  };
+
+  extractLayout = () => {
+    console.log("extractLayout..");
+    console.log(this.ColumnApi.getColumnState());
+
+    // JSON.stringify(this.gridApi.getFilterModel());
+    // JSON.stringify(this.gridColumnApi.getColumnState());
+  }
+  onBtRemove = () => {
+    var selectedRows = this.gridApi.getSelectedNodes();
+    if (!selectedRows || selectedRows.length === 0) {
+      return;
+    }
+    var selectedRow = selectedRows[0];
+    console.log("selectedRow..");
+    console.log(selectedRow);
+    console.log(selectedRow.data);
+    console.log("this.states before remove..");
+    console.log(this.state.rowData.rows);
+    var indexToRemove = this.state.rowData.rows.indexOf(selectedRow.data);
+    if (indexToRemove >= 0) {
+      this.state.rowData.rows.splice(indexToRemove, 1);
+    }
+    console.log("this.states after remove..");
+    console.log(this.state.rowData.rows);
+    // setTimeout(() => { this.gridApi.refreshServerSideStore(this.getCurrentRoutes()); }, 3000);
+    this.gridApi.refreshServerSideStore(this.getCurrentRoutes());
+    
+  };
+
+  getCurrentRoutes = () => {
+    console.log('getCurrentRoutes...');
+    var storeState = this.gridApi.getServerSideStoreState();
+    console.log('Store States...');
+    console.log(storeState);
+    let currentStore = storeState[storeState.length - 1];
+    let currentRoute = currentStore.route;
+    let paramsValue = {};
+    if(currentRoute.length){
+      paramsValue = { route : currentRoute, purge: false };
+    }else{
+      paramsValue = { purge: true };
+    }
+    return paramsValue;
+  };
+
+  onBtStoreState = () => {
+    var storeState = this.gridApi.getServerSideStoreState();
+    console.log('Store States:');
+    console.log(storeState[storeState.length - 1]);
+    storeState.forEach(function (state, index) {
+      console.log(
+        index +
+          ' - ' +
+          JSON.stringify(state).replace(/"/g, '').replace(/,/g, ', ')
+      );
+    });
+  };
+
+  jumpTo500 = () => {
+    // if (this.gridApi.getInfiniteRowCount() < 501) {
+    //   this.gridApi.setRowCount(501, false);
+    // }
+    this.gridApi.ensureIndexVisible(500);
+  };
+
+  jumpToFirst = () => {
+    // if (this.gridApi.getInfiniteRowCount() < 501) {
+    //   this.gridApi.setRowCount(501, false);
+    // }
+    this.gridApi.ensureIndexVisible(1);
+  };
+
+  selectedRowNodesInfo = () => {
+    var selectedNodes = this.gridApi.getSelectedNodes();
+    if (!selectedNodes || selectedNodes.length === 0) {
+      return;
+    }
+    console.log("selectedNodes..");
+    console.log(selectedNodes);
+    var selectedRows = this.gridApi.getSelectedRows();
+    if (!selectedRows || selectedRows.length === 0) {
+      return;
+    }
+    console.log("selectedRow..");
+    console.log(selectedRows);
+  };
+
+  updateSelectedRows = () => {
+    var idsToUpdate = this.gridApi.getSelectedNodes().map(function (node) {
+      return node.data.id;
+    });
+
+      console.log("this.gridApi.getSelectedNodes()...");
+      console.log(this.gridApi.getSelectedNodes());
+      console.log("idsToUpdate...");
+      console.log(idsToUpdate);
+
+    var updatedRows = [];
+    this.gridApi.forEachNode(function (rowNode) {
+      // console.log("rowNode.data.id...");
+      // console.log(rowNode.data.id);
+      if (idsToUpdate.indexOf(rowNode.data.id) >= 0) {
+        var updated = JSON.parse(JSON.stringify(rowNode.data));
+        updated.AccountTypeIDt += 1;
+        //rowNode.setData(updated);
+        rowNode.setDataValue('AccountTypeIDt', Math.floor(Math.random() * 10000));
+        updatedRows.push(updated);
+      }
+    });
+    //updateServerRows(updatedRows);
+  };
+
+  onUpdateAccountType = () => {    
+    var rowNode: any = this.gridApi.getDisplayedRowAtIndex(1);
+    rowNode.setDataValue('AccountTypeIDt', Math.floor(Math.random() * 10000));
   };
 
   public render(){
@@ -634,6 +693,44 @@ class ServerSideTransactions extends Component<Props, GridState> {
         <div className="row">
           <div className="col-12 mx-auto">            
             <div className="ag-theme-alpine" style={{height: 400, width: 800}}>
+            <div style={{ marginBottom: '5px' }}>
+              <button onClick={() => this.refreshCache(null)}>
+                Refresh Top Level
+              </button>
+              <button onClick={() => this.refreshStore()}>
+                Refresh Store
+              </button>
+              <button
+                onClick={() => this.onFlashOneCell()}
+                style={{ marginLeft: '15px' }}
+              >
+                Flash One Cell
+              </button>
+              <button onClick={() => this.extractLayout()}>
+                extractLayout
+              </button>
+              <button onClick={() => this.onBtRemove()}>
+                Remove Selected Row
+              </button>
+              <button onClick={() => this.onBtStoreState()}>
+                Store State
+              </button>
+              <button onClick={() => this.jumpTo500()}>
+                Jump to 500
+              </button>
+              <button onClick={() => this.jumpToFirst()}>
+              Jump to First
+              </button>
+              <button onClick={() => this.selectedRowNodesInfo()}>
+              Selected RowNodes Info
+              </button>
+              <button onClick={() => this.updateSelectedRows()}>
+                Update Selected Rows
+              </button>
+              <button onClick={() => this.onUpdateAccountType()}>
+                Update Account Type Values
+              </button>
+            </div>
             <AgGridReact
               modules={AllModules}
               onGridReady={this.onGridReady}
@@ -649,7 +746,14 @@ class ServerSideTransactions extends Component<Props, GridState> {
               purgeClosedRowNodes={this.state.purgeClosedRowNodes}
               blockLoadDebounceMillis={this.state.blockLoadDebounceMillis}
               debug={this.state.debug}
-              // getServerSideStoreParams={this.state.getServerSideStoreParams}
+              animateRows={true}
+              //getServerSideStoreParams={this.state.getServerSideStoreParams}
+              rowGroupPanelShow={this.state.rowGroupPanelShow}
+              rowSelection={this.state.rowSelection}
+              enableCellChangeFlash={true}
+              isRowSelectable={this.isRowSelectable}
+              // getRowNodeId={this.state.getRowNodeId}
+              
             />
 
             </div>
@@ -675,5 +779,14 @@ const mapDispatchToProps = (
     serverSideTransactionsRequest: (params: any) => dispatch(serverSideTransactionsRequest(params))
   };
 };
+
+function numberValueParser(params: any) {
+  return Number(params.newValue);
+}
+function formatNumber(number: any) {
+  return Math.floor(number)
+    .toString()
+    .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(ServerSideTransactions);

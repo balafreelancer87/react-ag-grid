@@ -43,6 +43,34 @@ export const serverSideFullStoreRequest: ActionCreator<AppThunk> = (params) => {
   };
 };
 
+export const serverSideFullStoreGetRequest: ActionCreator<AppThunk> = () => {
+  return async (dispatch: Dispatch) => {
+    dispatch({
+      type: ServerSideFullStoreActionTypes.SERVER_SIDE_FULLSTORE_DATA_REQUEST,
+    });
+    try {
+      console.log("serverSideFullStoreGetRequest...");
+
+      const response = await axios
+        .get('http://localhost:8000/olympicWinners')
+        .then(res => res.data);
+        console.log("response...");
+        console.log(response);
+
+      return dispatch({
+        type: ServerSideFullStoreActionTypes.SERVER_SIDE_FULLSTORE_DATA_SUCCESS,
+        payload: response
+      });
+
+    } catch (err) {
+      return dispatch({
+        type: ServerSideFullStoreActionTypes.SERVER_SIDE_FULLSTORE_DATA_ERROR,
+        payload: "Error in Fetching data"
+      });
+    }
+  };
+};
+
 // export const serverSideFullStoreRequest: ActionCreator<AppThunk> = () => {
 //   return async (dispatch: Dispatch) => {
 //     dispatch({
