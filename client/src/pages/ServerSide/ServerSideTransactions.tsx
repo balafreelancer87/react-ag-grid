@@ -3,13 +3,14 @@ import { AgGridReact, AgGridReactProps } from '@ag-grid-community/react';
 import { AllModules, ColumnApi, GridReadyEvent, IServerSideGetRowsParams, ModelUpdatedEvent, GridApi, ColDef, ServerSideStoreType, GridOptions, ModuleRegistry} from '@ag-grid-enterprise/all-modules';
 
 import axios from "axios";
+import _ from "lodash";
 
 //redux
 import { connect } from "react-redux";
 import { AnyAction } from "redux";
 import { ApplicationState } from "../../store";
 import { ThunkDispatch } from "redux-thunk";
-import { serverSideTransactionsRequest } from "../../store/serversidetransactions/actionCreators";
+import { serverSideTransactionsRequest, serverSideUpdateRequest } from "../../store/serversidetransactions/actionCreators";
 
 import Wrapper from '../../components/Wrapper';
 import "ag-grid-community/dist/styles/ag-grid.css";
@@ -675,9 +676,37 @@ class ServerSideTransactions extends Component<Props, GridState> {
     //updateServerRows(updatedRows);
   };
 
-  onUpdateAccountType = () => {    
-    var rowNode: any = this.gridApi.getDisplayedRowAtIndex(1);
-    rowNode.setDataValue('AccountTypeIDt', Math.floor(Math.random() * 10000));
+  onUpdateAccountType = async() => {
+    await this.props.serverSideUpdateRequest();
+    console.log("this.props.updateData...");
+    console.log(this.props.updateData);
+    if(this.props.updateData){
+      let updateRows = this.props.updateData.rows;
+      let idsToUpdate = updateRows.map(function (row: any) {
+        return row.id;
+      });
+      console.log("idsToUpdate...");
+      console.log(idsToUpdate);
+      this.gridApi.forEachNode(function (rowNode) {
+        // console.log("rowNode.data.id...");
+        // console.log(rowNode.data.id);
+        if (idsToUpdate.indexOf(rowNode.data.id) >= 0) {
+          
+          let singleRow = _.find(updateRows, function(item) {
+                              return item.id === rowNode.data.id;
+                          });
+          console.log("singleRow...");
+          console.log(singleRow);
+          // updated.AccountTypeIDt = singleRow.AccountTypeIDt;
+          // rowNode.setData(updated);
+          rowNode.setDataValue('AccountTypeIDt', singleRow.AccountTypeIDt);
+          
+        }
+      });
+    }    
+
+    //var rowNode: any = this.gridApi.getDisplayedRowAtIndex(1);
+    //rowNode.setDataValue('AccountTypeIDt', Math.floor(Math.random() * 10000));
   };
 
   public render(){
@@ -769,14 +798,16 @@ class ServerSideTransactions extends Component<Props, GridState> {
 const mapStateToProps = ({ serverSideTransactions }: ApplicationState) => ({
   loading: serverSideTransactions.loading,
   errors: serverSideTransactions.errors,
-  data: serverSideTransactions.data
+  data: serverSideTransactions.data,
+  updateData: serverSideTransactions.updateData
 });
 
 const mapDispatchToProps = (
   dispatch: ThunkDispatch<any, any, AnyAction>
 ) => {
   return {
-    serverSideTransactionsRequest: (params: any) => dispatch(serverSideTransactionsRequest(params))
+    serverSideTransactionsRequest: (params: any) => dispatch(serverSideTransactionsRequest(params)),
+    serverSideUpdateRequest: () => dispatch(serverSideUpdateRequest())
   };
 };
 

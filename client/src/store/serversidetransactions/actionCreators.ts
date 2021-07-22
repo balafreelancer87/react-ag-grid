@@ -43,6 +43,34 @@ export const serverSideTransactionsRequest: ActionCreator<AppThunk> = (params) =
   };
 };
 
+export const serverSideUpdateRequest: ActionCreator<AppThunk> = (params) => {
+  return async (dispatch: Dispatch) => {
+    dispatch({
+      type: ServerSideTransactionsActionTypes.SERVER_SIDE_TRANSACTIONS_UPDATE_REQUEST,
+    });
+    try {
+      console.log("ServerSideTransactions params..");
+    console.log(params);
+      const response = await axios
+        .get('http://localhost:8000/updates', params)
+        .then(res => res.data);
+        console.log("response...");
+        console.log(response);
+
+      return dispatch({
+        type: ServerSideTransactionsActionTypes.SERVER_SIDE_TRANSACTIONS_UPDATE_SUCCESS,
+        payload: response
+      });
+
+    } catch (err) {
+      return dispatch({
+        type: ServerSideTransactionsActionTypes.SERVER_SIDE_TRANSACTIONS_UPDATE_ERROR,
+        payload: "Error in Fetching data"
+      });
+    }
+  };
+};
+
 // export const serverSideFullStoreRequest: ActionCreator<AppThunk> = () => {
 //   return async (dispatch: Dispatch) => {
 //     dispatch({

@@ -23,6 +23,7 @@
     "connected-react-router": "^6.9.1",
     "faker": "^5.5.3",
     "history": "^5.0.0",
+    "lodash": "^4.17.21",
     "node-sass": "^6.0.0",
     "react": "^17.0.2",
     "react-app-rewire-hot-loader": "^2.0.1",
@@ -66,6 +67,7 @@
     ]
   },
   "devDependencies": {
-    "@types/faker": "^5.5.6"
+    "@types/faker": "^5.5.6",
+    "@types/lodash": "^4.14.171"
   }
 }

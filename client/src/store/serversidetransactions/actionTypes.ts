@@ -9,7 +9,10 @@
 export enum ServerSideTransactionsActionTypes { 
   SERVER_SIDE_TRANSACTIONS_DATA_REQUEST = '@@server_side_transactions_data/FETCH_REQUEST',
   SERVER_SIDE_TRANSACTIONS_DATA_SUCCESS = '@@server_side_transactions_data/FETCH_SUCCESS',
-  SERVER_SIDE_TRANSACTIONS_DATA_ERROR = '@@server_side_transactions_data/FETCH_ERROR'
+  SERVER_SIDE_TRANSACTIONS_DATA_ERROR = '@@server_side_transactions_data/FETCH_ERROR',
+  SERVER_SIDE_TRANSACTIONS_UPDATE_REQUEST = '@@server_side_transactions_update/FETCH_REQUEST',
+  SERVER_SIDE_TRANSACTIONS_UPDATE_SUCCESS = '@@server_side_transactions_update/FETCH_SUCCESS',
+  SERVER_SIDE_TRANSACTIONS_UPDATE_ERROR = '@@server_side_transactions_update/FETCH_ERROR',
 }
 
 // This type is basically shorthand for `{ [key: string]: any }`. Feel free to replace `any` with
@@ -28,4 +31,5 @@ export interface ServerSideTransactionsState {
   readonly data: ServerSideTransactionsData[] | string[] | any
   readonly errors?: string | null
   readonly message?: string | null
+  readonly updateData: ServerSideTransactionsData[] | string[] | any
 }
