@@ -138,6 +138,25 @@ app.get('/updates', function (req, res) {
     res.json({rows: rowData});
 });
 
+
+app.get('/update_full', function (req, res) {
+    let rowData = [{
+        age: 23,
+        id: 1,
+        athlete: "Michael Phelps",
+        bronze: 0,
+        country: "United States",
+        country_group: "U",
+        date: "24/08/2008",
+        gold: Math.floor(Math.random() * 100),
+        silver: 0,
+        sport: "Swimming",
+        total: 10,
+        year: 2008
+    }]
+    res.json({rows: rowData});
+});
+
 app.listen(8000, () => {
     console.log('Started on localhost:8000');
 });

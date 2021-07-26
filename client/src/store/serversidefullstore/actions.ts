@@ -14,9 +14,26 @@ interface ServerSideFullStoreErrorAction {
   payload: string;
 }
 
+interface ServerSideFullStoreUpdateAction {
+  type: ServerSideFullStoreActionTypes.SERVER_SIDE_FULLSTORE_UPDATE_REQUEST;
+}
+
+interface ServerSideFullStoreUpdateSuccessAction {
+  type: ServerSideFullStoreActionTypes.SERVER_SIDE_FULLSTORE_UPDATE_SUCCESS;
+  payload: string[];
+}
+
+interface ServerSideFullStoreUpdateErrorAction {
+  type: ServerSideFullStoreActionTypes.SERVER_SIDE_FULLSTORE_UPDATE_ERROR;
+  payload: string;
+}
+
 
 
 export type ServerSideFullStoreActions =
   | ServerSideFullStoreAction
   | ServerSideFullStoreSuccessAction
-  | ServerSideFullStoreErrorAction;
+  | ServerSideFullStoreErrorAction
+  | ServerSideFullStoreUpdateAction
+  | ServerSideFullStoreUpdateSuccessAction
+  | ServerSideFullStoreUpdateErrorAction;

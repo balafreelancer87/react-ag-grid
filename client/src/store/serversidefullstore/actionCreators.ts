@@ -71,6 +71,34 @@ export const serverSideFullStoreGetRequest: ActionCreator<AppThunk> = () => {
   };
 };
 
+export const serverSideFullStoreUpdateRequest: ActionCreator<AppThunk> = () => {
+  return async (dispatch: Dispatch) => {
+    dispatch({
+      type: ServerSideFullStoreActionTypes.SERVER_SIDE_FULLSTORE_UPDATE_REQUEST,
+    });
+    try {
+      console.log("serverSideFullStoreUpdateRequest...");
+
+      const response = await axios
+        .get('http://localhost:8000/update_full')
+        .then(res => res.data);
+        console.log("response...");
+        console.log(response);
+
+      return dispatch({
+        type: ServerSideFullStoreActionTypes.SERVER_SIDE_FULLSTORE_UPDATE_SUCCESS,
+        payload: response
+      });
+
+    } catch (err) {
+      return dispatch({
+        type: ServerSideFullStoreActionTypes.SERVER_SIDE_FULLSTORE_UPDATE_ERROR,
+        payload: "Error in Fetching data"
+      });
+    }
+  };
+};
+
 // export const serverSideFullStoreRequest: ActionCreator<AppThunk> = () => {
 //   return async (dispatch: Dispatch) => {
 //     dispatch({

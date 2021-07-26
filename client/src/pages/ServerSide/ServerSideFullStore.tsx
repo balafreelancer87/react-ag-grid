@@ -9,7 +9,7 @@ import { connect } from "react-redux";
 import { AnyAction } from "redux";
 import { ApplicationState } from "../../store";
 import { ThunkDispatch } from "redux-thunk";
-import { serverSideFullStoreRequest, serverSideFullStoreGetRequest } from "../../store/serversidefullstore/actionCreators";
+import { serverSideFullStoreRequest, serverSideFullStoreGetRequest, serverSideFullStoreUpdateRequest } from "../../store/serversidefullstore/actionCreators";
 
 import Wrapper from '../../components/Wrapper';
 import "ag-grid-community/dist/styles/ag-grid.css";
@@ -34,6 +34,7 @@ export interface GridState {
   getServerSideStoreParams?: any;
   rowSelection?:  string;
   getRowStyle?: any;
+  getRowNodeId?: any;
 }
 
 
@@ -86,15 +87,15 @@ class ServerSideFullStore extends Component<Props, GridState> {
       //   { field: 'bronze' },
       // ],
       columnDefs: [
-        // {
-        //   field: 'id',
-        //   hide: true,
-        // },
+        {
+          field: 'id',
+          
+        },
         { field: 'athlete' },
         {
           field: 'country',
-          rowGroup: true,
-          hide: true,
+          // rowGroup: true,
+          // hide: true,
         },
         { field: 'gold' },
         { field: 'silver' },
@@ -114,6 +115,9 @@ class ServerSideFullStore extends Component<Props, GridState> {
       maxConcurrentDatasourceRequests: 2,
       blockLoadDebounceMillis: 1000,
       rowSelection: 'multiple',
+      getRowNodeId: (data: any) => {
+        return data.id;
+      },
       getRowStyle: (params: any): any => {
         if (params.node.rowIndex % 2 === 0) {
             return { background: 'red' };
@@ -252,30 +256,97 @@ class ServerSideFullStore extends Component<Props, GridState> {
     console.log("selectedRow...");
     console.log(selectedRow);
 
-    // var idsToUpdate = this.gridApi.getSelectedNodes().map(function (node) {
-    //   return node.data.id;
-    // });
-    // console.log("idsToUpdate...");
-    // console.log(idsToUpdate);
-    // var updatedRows: any = [];
-    // this.gridApi.forEachNode(function (rowNode) {
-    //   if (idsToUpdate.indexOf(rowNode.data.id) >= 0) {
-    //     var updated = JSON.parse(JSON.stringify(rowNode.data));
-    //     console.log("updated...");
-    //     console.log(updated);
-
-    //     updated.gold += 1;
-    //     updated.silver += 2;
-    //     updated.bronze += 3;
-    //     rowNode.setData(updated);
-    //     updatedRows.push(updated);
-    //   }
-    // });
-    //updateServerRows(updatedRows);
+    var idsToUpdate = this.gridApi.getSelectedNodes().map(function (node) {
+      return node.data.id;
+    });
+    console.log("idsToUpdate...");
+    console.log(idsToUpdate);
+    
+    this.gridApi.forEachNode(function (rowNode) {
+      if (idsToUpdate.indexOf(rowNode.data.id) >= 0) {
+        var updated = JSON.parse(JSON.stringify(rowNode.data));
+        console.log("updated...");
+        console.log(updated);
+        updated.gold += 1;
+        updated.silver += 2;
+        updated.bronze += 3;
+        rowNode.setData(updated);    
+      }
+    });
+    
   };
 
   isRowSelectable = (rowNode: any) => {
     return !rowNode.group;
+  };
+
+  selectedRowNodesInfo = () => {
+    var selectedNodes = this.gridApi.getSelectedNodes();
+    if (!selectedNodes || selectedNodes.length === 0) {
+      return;
+    }
+    console.log("selectedNodes..");
+    console.log(selectedNodes);
+    var selectedRows = this.gridApi.getSelectedRows();
+    if (!selectedRows || selectedRows.length === 0) {
+      return;
+    }
+    console.log("selectedRow data..");
+    console.log(selectedRows);
+  };
+
+  updateFullstoreTransaction = async() => {
+    await this.props.serverSideFullStoreUpdateRequest();
+    console.log("this.props.updateData...");
+    console.log(this.props.updateData);
+
+    const myTransaction = {
+      // adding a row, there should be no row with ID number already
+      add: [],
+      // updating a row, the grid will look for the row with ID number to update
+      update: [this.props.updateData.rows[0]],
+      
+      remove: []
+    }
+    console.log("myTransaction...");
+    console.log(myTransaction);
+    var res = this.gridApi.applyServerSideTransaction(myTransaction);
+    console.log("this.props.updateData...res..");
+    console.log(res);
+    //this.printResult(res);
+
+  };
+
+  onStoreStateInfo = () => {
+    var storeState = this.gridApi.getServerSideStoreState();
+    console.log('Store States:');
+    console.log(storeState[storeState.length - 1]);
+    storeState.forEach(function (state, index) {
+      console.log(
+        index +
+          ' - ' +
+          JSON.stringify(state).replace(/"/g, '').replace(/,/g, ', ')
+      );
+    });
+  };
+
+  printResult = (res: any) => {
+    console.log('---------------------------------------');
+    if (res.add) {
+      res.add.forEach(function (rowNode: any) {
+        console.log('Added Row Node', rowNode);
+      });
+    }
+    if (res.remove) {
+      res.remove.forEach(function (rowNode: any) {
+        console.log('Removed Row Node', rowNode);
+      });
+    }
+    if (res.update) {
+      res.update.forEach(function (rowNode: any) {
+        console.log('Updated Row Node', rowNode);
+      });
+    }
   };
 
   public render(){
@@ -293,9 +364,20 @@ class ServerSideFullStore extends Component<Props, GridState> {
             <div className="ag-theme-alpine" style={{height: 400, width: 800}}>
             <div style={{ marginBottom: '5px' }}>
               <button onClick={() => this.updateSelectedRows()}>
-                Update Selected Rows
+                Update Single Records
               </button>
-              <button onClick={() => this.refreshStore()}>Refresh Store</button>
+              <button onClick={() => this.selectedRowNodesInfo()}>
+                Selected RowNodes Info
+              </button>
+              <button onClick={() => this.onStoreStateInfo()}>
+                Store State Info
+              </button>
+              <button onClick={() => this.refreshStore()}>
+                Refresh Store
+              </button>
+              <button onClick={() => this.updateFullstoreTransaction()}>
+              Update Fullstore Transaction
+              </button>
             </div>
             <AgGridReact
               modules={AllModules}
@@ -316,6 +398,7 @@ class ServerSideFullStore extends Component<Props, GridState> {
               enableCellChangeFlash={true}
               rowSelection={this.state.rowSelection}
               isRowSelectable={this.isRowSelectable}
+              getRowNodeId={this.state.getRowNodeId}
               // getRowStyle={this.state.getRowStyle}
               
             />
@@ -333,7 +416,8 @@ class ServerSideFullStore extends Component<Props, GridState> {
 const mapStateToProps = ({ serverSideFullStore }: ApplicationState) => ({
   loading: serverSideFullStore.loading,
   errors: serverSideFullStore.errors,
-  data: serverSideFullStore.data
+  data: serverSideFullStore.data,
+  updateData: serverSideFullStore.updateData
 });
 
 const mapDispatchToProps = (
@@ -341,7 +425,8 @@ const mapDispatchToProps = (
 ) => {
   return {
     serverSideFullStoreRequest: (params: any) => dispatch(serverSideFullStoreRequest(params)),
-    serverSideFullStoreGetRequest: () => dispatch(serverSideFullStoreGetRequest())
+    serverSideFullStoreGetRequest: () => dispatch(serverSideFullStoreGetRequest()),
+    serverSideFullStoreUpdateRequest: () => dispatch(serverSideFullStoreUpdateRequest())
   };
 };
 

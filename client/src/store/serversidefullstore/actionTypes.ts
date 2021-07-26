@@ -9,7 +9,10 @@
 export enum ServerSideFullStoreActionTypes { 
   SERVER_SIDE_FULLSTORE_DATA_REQUEST = '@@server_side_fullstore_data/FETCH_REQUEST',
   SERVER_SIDE_FULLSTORE_DATA_SUCCESS = '@@server_side_fullstore_data/FETCH_SUCCESS',
-  SERVER_SIDE_FULLSTORE_DATA_ERROR = '@@server_side_fullstore_data/FETCH_ERROR'
+  SERVER_SIDE_FULLSTORE_DATA_ERROR = '@@server_side_fullstore_data/FETCH_ERROR',
+  SERVER_SIDE_FULLSTORE_UPDATE_REQUEST = '@@server_side_fullstore_update/FETCH_REQUEST',
+  SERVER_SIDE_FULLSTORE_UPDATE_SUCCESS = '@@server_side_fullstore_update/FETCH_SUCCESS',
+  SERVER_SIDE_FULLSTORE_UPDATE_ERROR = '@@server_side_fullstore_update/FETCH_ERROR'
 }
 
 // This type is basically shorthand for `{ [key: string]: any }`. Feel free to replace `any` with
@@ -28,4 +31,5 @@ export interface ServerSideFullStoreState {
   readonly data: ServerSideFullStoreData[] | string[] | any
   readonly errors?: string | null
   readonly message?: string | null
+  readonly updateData: ServerSideFullStoreData[] | string[] | any
 }
